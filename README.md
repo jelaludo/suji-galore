@@ -1,6 +1,6 @@
 # sūji-galore 数字 galore
 
-A playground proof of concept for visual representations of numbers.
+A gallery-first playground for visual representations of numbers. Its initial viewport gives the available space to the glyphs; navigation, motion, surfaces, and transition presets remain compact or disclosed on demand.
 
 Run `python3 -m http.server 8137` in this directory, then open http://localhost:8137 . No build step, framework, or runtime package dependencies. Optional Google Fonts have system fallbacks.
 
@@ -18,7 +18,7 @@ The public feature list is sourced from `js/notebook.js` (`roadmap`). Update its
 
 ## Validation
 
-`npm test` runs deterministic layout, range, unique part identity, encoding uniqueness, round-trip, boundary, and carry checks. The same suite can run at `/tests/index.html` in a browser. Desktop Safari interaction and accessibility-tree paths have also been exercised; narrow-phone visual review and sustained performance measurement remain on the roadmap.
+`npm test` runs deterministic layout, range, unique part identity, encoding uniqueness, round-trip, boundary, and carry checks. The same suite can run at `/tests/index.html` in a browser. Desktop Safari interaction and accessibility-tree paths have been exercised. The gallery-first shell is also checked in Chromium at 1440 × 900 and 390 × 844 for first-viewport fit, Tools disclosure, number updates, and the detail dialog; sustained phone performance measurement remains on the roadmap.
 
 ## References
 

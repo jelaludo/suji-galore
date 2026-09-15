@@ -6,7 +6,7 @@ Run `python3 -m http.server 8137` in this directory, then open http://localhost:
 
 ## Included
 
-Nine systems: Cistercian, Kaktovik, Maya, seven-segment, Kado, Ko, gate tally, 正 tally, and binary. Shared decimal/hex/binary input, three surfaces, step/count controls, keyed transitions, expanded explain views, and read/compose study modes with device-local statistics. Only seven-segment accepts negatives. The prototype caps input at ±999999, Cistercian at 9999, and tally systems at 200.
+Nine systems: Cistercian, Kaktovik, Maya, seven-segment, Kado, Ko, gate tally, 正 tally, and binary. Shared decimal/hex/binary input, three surfaces, step/count controls, keyed transitions, expanded explain views, and read/choice/build study modes with device-local statistics. Choice distractors are ranked by structural similarity within the selected notation. Only seven-segment accepts negatives. The prototype caps input at ±999999, Cistercian at 9999, and tally systems at 200.
 
 ## DEVLOG
 
@@ -26,4 +26,4 @@ Interaction and glow reference: https://github.com/kai-denrei/dexipurei-galore
 
 Cistercian geometry reference: https://github.com/kai-denrei/CistercianWeave
 
-No reference implementation was copied or vendored. The local Kaktovik image is preserved for a later geometry review.
+No reference implementation was copied or vendored. The local Kaktovik image is preserved for continuing visual review; its cumulative five-stroke ladder is also checked against the Unicode specification and encoding proposal in `docs/systems/kaktovik.md`.

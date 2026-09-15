@@ -2,6 +2,7 @@ import {systems} from '../js/systems/index.js';
 import {parseNumber} from '../js/core/numbers.js';
 import {diffParts,carryDelay} from '../js/core/transition.js';
 import {templateFor} from '../js/core/template.js';
+import {choiceOptions,structuralDistance} from '../js/core/quiz-options.js';
 export function runTests(){
   let checks=0;const assert=(condition,message)=>{checks++;if(!condition)throw new Error(message);};
   for(const [text,want] of [['0',0],['0xFF',255],['-0b11',-3],['+42',42],['',null],['1e3',null],['2.2',null],['9999999999999999',null]])assert(parseNumber(text)===want,`Parse ${text}`);
@@ -20,6 +21,7 @@ export function runTests(){
   for(const [small,big] of [[5,10],[10,15]]){const a=kaktovik.layout(small).parts,b=kaktovik.layout(big).parts;assert(a.every(p=>partFor(big,p.id)?.d===p.d)&&b.length===a.length+1,`Kaktovik ${big} preserves ${small} and adds one five-stroke above`);}
   for(const n of [6,11,16]){const fp=coords(partFor(n,'0:f1')),op=coords(partFor(n,'0:o1'));assert(fp.slice(0,2).join(',')===op.slice(0,2).join(','),`Kaktovik ${n} joins its five and one components`);}
   assert(coords(partFor(1,'0:o1'))[1]===coords(partFor(16,'0:o1'))[1],'Kaktovik unit strokes stay in the lower region');
+  const choices=choiceOptions(kaktovik,17,4,()=>.5);assert(choices.length===4&&new Set(choices).size===4&&choices.includes(17),'Choice quiz returns one target and three unique distractors');assert(choices.filter(n=>n!==17).every(n=>structuralDistance(kaktovik,17,n)===1),'Kaktovik distractors are nearest structural neighbours');
   const maya=systems.find(s=>s.id==='maya');assert(maya.layout(19).parts.filter(p=>p.id.includes(':bar')).length===3&&maya.layout(19).parts.filter(p=>p.id.includes(':dot')).length===4,'Maya 19 has 3 bars and 4 dots');
   const sei=systems.find(s=>s.id==='tally-sei');assert(sei.layout(7).parts.length===7&&sei.decode(sei.layout(7).parts.map(p=>p.id))===7,'Sei tally preserves stroke count');
   const transition=diffParts(c.layout(1999),c.layout(2000));assert(transition.added.join(',')==='k:b'&&transition.removed.length===10&&transition.kept.join(',')==='stem','Cistercian 1999 to 2000 diff');assert(carryDelay('h:a',1999,2000)===80&&carryDelay('u:a',1999,2000)===0,'Carry delay is least significant first');

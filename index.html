@@ -5,9 +5,10 @@
   <meta name="theme-color" content="#08080a"><meta name="description" content="An experimental playground for numbers: compare numeral systems, watch them count, and explore how each glyph works.">
   <title>sūji-galore · a number playground</title>
   <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/quiz.css">
 </head>
 <body>
-  <header class="masthead"><a class="brand" href="#playground">sūji-galore <span lang="ja">数字</span></a><nav aria-label="Main"><a href="#playground">Playground</a><a href="#devlog">DEVLOG</a><a href="#roadmap">ROADMAP</a></nav><span class="edition">LAB / 001</span></header>
+  <header class="masthead"><a class="brand" href="#playground">sūji-galore <span lang="ja">数字</span></a><nav aria-label="Main"><a href="#playground">Playground</a><a href="#quiz">Study</a><a href="#devlog">DEVLOG</a><a href="#roadmap">ROADMAP</a></nav><span class="edition">LAB / 002</span></header>
   <main>
     <section id="playground" aria-labelledby="title">
       <div class="intro"><div><p class="eyebrow">A NUMBER PLAYGROUND</p><h1>One number. Many ways to see it.</h1></div><p class="intro-note">Count, compare, get curious.<br><span lang="ja">数のかたちで遊ぶ。</span></p></div>
@@ -17,9 +18,17 @@
         <div class="skin-control"><label for="skin">SURFACE</label><select id="skin"><option value="nixie">Nixie glow</option><option value="ink">Ink</option><option value="blueprint">Blueprint</option></select><label class="check"><input id="explain" type="checkbox"> Explain the parts</label></div>
       </div>
       <div class="under-console"><p id="input-help">Decimal, 0x hex, or 0b binary · ↑ / ↓ to step</p><p id="status" role="status">Paused at 42</p></div>
-      <div class="gallery-heading"><h2>Same value, different logic</h2><span>6 SYSTEMS · TAP TO EXPLORE</span></div>
+      <div class="gallery-heading"><h2>Same value, different logic</h2><span>9 SYSTEMS · TAP TO EXPLORE</span></div>
       <div id="gallery" class="gallery"></div>
       <div class="experiments"><span>TRY A TRANSITION</span><button data-example="4">4 → 5 <small>grouping</small></button><button data-example="15">15 → 16 <small>bit carry</small></button><button data-example="99">99 → 100 <small>place value</small></button><button data-example="1999">1999 → 2000 <small>four quadrants</small></button></div>
+    </section>
+    <section id="quiz" class="quiz" aria-labelledby="quiz-title">
+      <div class="section-heading"><p class="eyebrow">READ IT / BUILD IT</p><h2 id="quiz-title">QUICK STUDY</h2><p>A small test turns visual hunches into findings.</p></div>
+      <div class="quiz-shell">
+        <div class="quiz-settings"><label for="quiz-system">SYSTEM</label><select id="quiz-system"></select><span class="control-label">MODE</span><div class="button-row"><button id="quiz-read" aria-pressed="true">Read</button><button id="quiz-compose" aria-pressed="false">Compose</button></div><p id="quiz-instruction"></p></div>
+        <div class="quiz-play"><p id="quiz-prompt" class="quiz-prompt"></p><div id="quiz-stage" class="stage"></div><form id="quiz-form"><label for="quiz-answer">YOUR ANSWER</label><div class="answer-row"><input id="quiz-answer" type="number" inputmode="numeric" autocomplete="off"><button id="quiz-check" type="submit">Check</button><button id="quiz-next" type="button" hidden>Next →</button></div></form><p id="quiz-feedback" class="quiz-feedback" role="status"></p></div>
+        <aside class="quiz-stats"><span class="control-label">ON THIS DEVICE</span><strong id="quiz-score">0 / 0</strong><span id="quiz-accuracy">No attempts yet</span><span id="quiz-time">Median time —</span><button id="quiz-reset">Reset stats</button></aside>
+      </div>
     </section>
     <section id="devlog" class="notebook" aria-labelledby="devlog-title"><div class="section-heading"><p class="eyebrow">FIELD NOTES</p><h2 id="devlog-title">DEVLOG</h2><p>What we build. What we notice. What we still need to test.</p></div><div id="devlog-content"></div></section>
     <section id="roadmap" class="notebook" aria-labelledby="roadmap-title"><div class="section-heading"><p class="eyebrow">NEXT EXPERIMENTS</p><h2 id="roadmap-title">ROADMAP</h2><p>A living list, shaped by what we learn in the playground.</p></div><div id="roadmap-content" class="roadmap-grid"></div></section>

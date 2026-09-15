@@ -2,6 +2,7 @@ import {systems} from './systems/index.js';
 import {parseNumber,MAX} from './core/numbers.js';
 import {render} from './core/render-svg.js';
 import {devlog,roadmap} from './notebook.js';
+import {initQuiz} from './quiz.js';
 const $=id=>document.getElementById(id);
 const params=new URLSearchParams(location.search);
 let value=parseNumber(params.get('v')??'42')??42,skin='nixie',explain=false,direction=0,timer=null,selected=null;
@@ -20,7 +21,8 @@ $('number').addEventListener('input',()=>{pause();const n=parseNumber($('number'
 $('minus').onclick=()=>step(-1);$('plus').onclick=()=>step(1);$('random').onclick=()=>{pause();setValue(Math.floor(Math.random()*201));};
 $('up').onclick=()=>run(1);$('down').onclick=()=>run(-1);$('pause').onclick=pause;
 $('rate').oninput=()=>{$('rate-value').textContent=`${$('rate').value} / sec`;if(direction)run(direction);};
-$('skin').onchange=()=>{skin=$('skin').value;try{localStorage.setItem('suji-settings',JSON.stringify({skin}));}catch{}update();};
+let quiz;
+$('skin').onchange=()=>{skin=$('skin').value;try{localStorage.setItem('suji-settings',JSON.stringify({skin}));}catch{}update();quiz?.refresh();};
 function toggleExplain(){explain=!explain;$('explain').checked=explain;$('detail-explain').setAttribute('aria-pressed',String(explain));update();}
 $('explain').onchange=toggleExplain;$('detail-explain').onclick=toggleExplain;
 document.querySelectorAll('[data-example]').forEach(b=>b.onclick=()=>{pause();setValue(Number(b.dataset.example));});
@@ -30,6 +32,7 @@ $('close').onclick=()=>$('detail').close();$('detail').addEventListener('close',
 document.addEventListener('keydown',e=>{if(e.target.matches('input,select,textarea')||e.altKey||e.ctrlKey||e.metaKey)return;if(e.key==='ArrowUp'||e.key==='ArrowDown'){e.preventDefault();step(e.key==='ArrowUp'?1:-1);}});
 for(const entry of devlog){const article=document.createElement('article');article.className='entry';const time=document.createElement('time');time.dateTime=entry.date;time.textContent=entry.date;const body=document.createElement('div');const title=document.createElement('h3');title.textContent=entry.title;body.append(title);entry.paragraphs.forEach((text,i)=>{const p=document.createElement('p');p.textContent=text;if(i===1)p.className='finding';body.append(p);});article.append(time,body);$('devlog-content').append(article);}
 for(const item of roadmap){const article=document.createElement('article');article.className='roadmap-item';const tag=document.createElement('span');tag.className='tag';tag.textContent=item.status;const h=document.createElement('h3');h.textContent=item.title;const ul=document.createElement('ul');item.items.forEach(text=>{const li=document.createElement('li');li.textContent=text;ul.append(li);});article.append(tag,h,ul);$('roadmap-content').append(article);}
+quiz=initQuiz(systems,()=>skin);
 update();
 const context=document.modelContext;
 if(context?.registerTool){const lifecycle=new AbortController();try{Promise.resolve(context.registerTool({name:'set_playground_number',description:'Set the shared number displayed by every numeral system and pause counting.',inputSchema:{type:'object',properties:{value:{type:'integer',minimum:-MAX,maximum:MAX}},required:['value'],additionalProperties:false},annotations:{readOnlyHint:false,untrustedContentHint:false},execute(input){if(!input||!Number.isInteger(input.value)||Math.abs(input.value)>MAX)throw new Error('Expected an integer from -999999 to 999999');pause();setValue(input.value);return{value,systems:systems.filter(s=>s.canRender(value)).map(s=>s.id)};}},{signal:lifecycle.signal})).catch(()=>{});}catch{}window.addEventListener('pagehide',()=>lifecycle.abort(),{once:true});}

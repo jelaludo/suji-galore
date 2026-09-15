@@ -6,7 +6,7 @@ Run `python3 -m http.server 8137` in this directory, then open http://localhost:
 
 ## Included
 
-Six systems: Cistercian, seven-segment, Kado, Ko, tally, and binary. Shared decimal/hex/binary input, three surfaces, step/count controls, transition examples, and expanded explain views. Only seven-segment accepts negatives. The prototype caps input at ±999999, Cistercian at 9999, and tally at 200.
+Nine systems: Cistercian, Kaktovik, Maya, seven-segment, Kado, Ko, gate tally, 正 tally, and binary. Shared decimal/hex/binary input, three surfaces, step/count controls, keyed transitions, expanded explain views, and read/compose study modes with device-local statistics. Only seven-segment accepts negatives. The prototype caps input at ±999999, Cistercian at 9999, and tally systems at 200.
 
 ## DEVLOG
 
@@ -18,7 +18,7 @@ The public feature list is sourced from `js/notebook.js` (`roadmap`). Update its
 
 ## Validation
 
-`npm test` runs deterministic layout, range, unique part identity, encoding uniqueness, round-trip, boundary, and carry checks. The same suite can run at `/tests/index.html` in a browser. Browser interaction, visual accessibility, and performance testing remain on the roadmap.
+`npm test` runs deterministic layout, range, unique part identity, encoding uniqueness, round-trip, boundary, and carry checks. The same suite can run at `/tests/index.html` in a browser. Desktop Safari interaction and accessibility-tree paths have also been exercised; narrow-phone visual review and sustained performance measurement remain on the roadmap.
 
 ## References
 

@@ -1,6 +1,6 @@
 # Visual verification queue
 
-- Kaktovik: compare the original straight-stroke interpretation against the preserved `kaktovik20digits.png` and Unicode U+1D2C0 chart with a knowledgeable human reader. Pay special attention to the joins between five-strokes and one-strokes.
+- Kaktovik: the five/one overlap at 19 and 399 was corrected after visual review. Continue comparing the original straight-stroke interpretation against `kaktovik20digits.png`, especially stroke angles, spacing, and the zero.
 - Maya: review the original shell symbol and vertical cell spacing against representative historical conventions. The Unicode chart’s font is a reference, not prescriptive geometry.
 - Check Cistercian convention against the reference chart with a human reader.
 - Review Ko zero-position marker and smallest inner rings at the input maximum.

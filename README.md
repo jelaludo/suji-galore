@@ -6,7 +6,7 @@ Run `python3 -m http.server 8137` in this directory, then open http://localhost:
 
 ## Included
 
-Nine systems: Cistercian, Kaktovik, Maya, seven-segment, Kado, Ko, gate tally, 正 tally, and binary. Shared decimal/hex/binary input, three surfaces, step/count controls, keyed transitions, expanded explain views, and read/choice/build study modes with device-local statistics. Choice distractors are ranked by structural similarity within the selected notation. Only seven-segment accepts negatives. The prototype caps input at ±999999, Cistercian at 9999, and tally systems at 200.
+Nine systems: Cistercian, Kaktovik, Maya, seven-segment, Kado, Quarter-Circle B16, gate tally, 正 tally, and binary. Shared decimal/hex/binary input, three surfaces, step/count controls, keyed transitions, expanded explain views, and read/choice/build study modes with device-local statistics. Study opens on Cistercian; Quarter-Circle B16 also supports all three modes across its 0–15 digit set. Choice distractors are ranked by structural similarity within the selected notation. Only seven-segment accepts negatives. The prototype caps input at ±999999, Cistercian at 9999, and tally systems at 200.
 
 ## DEVLOG
 

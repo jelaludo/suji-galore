@@ -56,11 +56,11 @@ export const systems = [
     layout(n){const ds=digits(n,16),parts=[],groups=[];ds.forEach((d,i)=>{const x=(ds.length-1-i)*110+5;parts.push(path(`${i}:frame`,`M${x},5h90v90h-90Z`,i%4));const shapes=[`M${x},5h45l-45,45Z`,`M${x+90},5v45l-45,-45Z`,`M${x},95v-45l45,45Z`,`M${x+90},95h-45l45,-45Z`];for(let b=0;b<4;b++)if(d&(1<<b))parts.push(path(`${i}:bit${b}`,shapes[b],b,true));groups.push(`${d} × ${16**i}`);});return layout(parts,ds.length*110,100,groups);},
     decode(ids){return ids.reduce((n,id)=>{const m=id.match(/^(\d+):bit(\d)$/);return n+(m?16**Number(m[1])*2**Number(m[2]):0);},0);}
   }),
-  system({id:'ko',name:'Ko',ja:'弧 · arc bits',base:16,origin:'Invented',structure:'Concentric',
-    quizMax:15,
-    description:'Each ring holds a hexadecimal digit. The outermost ring is the units place; each step inward multiplies by 16. Arc weights: upper left 1, upper right 2, lower left 4, lower right 8. A short radial tick at the top marks an empty ring; zero alone is a centre dot.',source:null,
+  system({id:'ko',name:'Quarter-Circle B16',ja:'弧 · quadrant bits',base:16,origin:'Invented',structure:'Concentric arcs',
+    quizMax:15,composeMax:15,composeSeeds:Array.from({length:16},(_,i)=>i),
+    description:'Four quarter-circle arcs form one base-16 digit: upper left = 1, upper right = 2, lower left = 4, and lower right = 8. Add the active arcs; 3 is the upper semicircle, 12 the lower semicircle, and 15 a complete ring. Multiple digits nest concentrically with the units place outermost. Zero alone is a centre dot.',source:null,
     layout(n){if(n===0)return layout([path('zero','M79,80a1,1 0 1,0 2,0a1,1 0 1,0 -2,0',0,true)],160,160,['0']);const ds=digits(n,16),parts=[],groups=[];ds.forEach((d,i)=>{const r=70-i*12;const arc=[`M${80-r},80A${r},${r} 0 0,1 80,${80-r}`,`M80,${80-r}A${r},${r} 0 0,1 ${80+r},80`,`M80,${80+r}A${r},${r} 0 0,1 ${80-r},80`,`M${80+r},80A${r},${r} 0 0,1 80,${80+r}`];for(let b=0;b<4;b++)if(d&(1<<b))parts.push(path(`${i}:bit${b}`,arc[b],b));if(!d)parts.push(line(`${i}:zero`,80,80-r-2,80,80-r+2,i%4));groups.push(`${d} × ${16**i}${i===0?' · outer':''}`);});return layout(parts,160,160,groups);},
-    decode(ids){return systems.find(s=>s.id==='kado').decode(ids);}
+    decode(ids){const hasBits=ids.some(id=>/:bit\d$/.test(id));if(ids.includes('zero'))return hasBits?NaN:0;return systems.find(s=>s.id==='kado').decode(ids);}
   }),
   system({id:'tally-gate',name:'Tally',ja:'五本の束 · groups of five',base:1,max:200,origin:'Historical',structure:'Cumulative',
     quizMax:50,

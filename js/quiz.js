@@ -12,7 +12,7 @@ function median(values){if(!values.length)return null;const sorted=[...values].s
 export function initQuiz(systems,getSkin){
   const select=$('quiz-system'),read=$('quiz-read'),choice=$('quiz-choice'),compose=$('quiz-compose'),form=$('quiz-form'),answer=$('quiz-answer'),choices=$('quiz-choices'),stage=$('quiz-stage');
   for(const system of systems){const option=document.createElement('option');option.value=system.id;option.textContent=`${system.name} · ${system.ja}`;select.append(option);}
-  select.value='kaktovik';let system=systems.find(s=>s.id===select.value),mode='read',target=0,started=0,locked=false,chosen=new Set(),stats=readStats();
+  select.value='cistercian';let system=systems.find(s=>s.id===select.value),mode='read',target=0,started=0,locked=false,chosen=new Set(),stats=readStats();
   function statKey(){return `${system.id}:${mode}`;}
   function currentStats(){return stats[statKey()]||{attempts:0,correct:0,times:[],confusions:{}};}
   function updateStats(){const s=currentStats(),m=median(s.times);$('quiz-score').textContent=`${s.correct} / ${s.attempts}`;$('quiz-accuracy').textContent=s.attempts?`${Math.round(s.correct/s.attempts*100)}% accurate`:'No attempts yet';$('quiz-time').textContent=m===null?'Median time —':`Median time ${(m/1000).toFixed(1)} s`;}

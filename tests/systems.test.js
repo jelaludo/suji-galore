@@ -14,6 +14,8 @@ export function runTests(){
   const c=systems[0];assert(c.layout(9999).parts.length===13,'Cistercian 9999 has 12 strokes and stem');
   assert(c.layout(1993).parts.map(p=>p.id).sort().join(',')==='h:a,h:b,h:e,k:a,stem,t:a,t:b,t:e,u:c','Cistercian 1993');
   const k=systems.find(s=>s.id==='kado');assert(k.layout(3).parts.filter(p=>p.fill).length===2,'Kado 3 has two corners');
+  assert(c.composeSeeds&&c.composeMax===9999,'Cistercian supports the complete single-glyph Build study');
+  const quarter=systems.find(s=>s.id==='ko');assert(quarter.name==='Quarter-Circle B16'&&quarter.composeMax===15,'Quarter-Circle B16 supports Build study');assert(quarter.layout(15).parts.length===4&&quarter.decode(quarter.layout(15).parts.map(p=>p.id))===15,'Quarter-Circle B16 complete ring is 15');assert(Number.isNaN(quarter.decode(['zero','0:bit0'])),'Quarter-Circle B16 rejects zero mixed with active arcs');
   const binary=systems.find(s=>s.id==='binary');assert(binary.layout(15).parts.filter(p=>p.fill).length===4&&binary.layout(16).parts.filter(p=>p.fill).length===1,'Binary carry changes active mass');
   const kaktovik=systems.find(s=>s.id==='kaktovik');assert(kaktovik.layout(19).parts.map(p=>p.id).sort().join(',')==='0:f1,0:f2,0:f3,0:o1,0:o2,0:o3,0:o4','Kaktovik 19 has 3 five strokes and 4 one strokes');assert(kaktovik.layout(20).parts.map(p=>p.id).sort().join(',')==='0:zero,1:o1','Kaktovik 20 is [1][0]');
   const coords=part=>[...part.d.matchAll(/-?\d+(?:\.\d+)?/g)].map(m=>Number(m[0])),partFor=(n,id)=>kaktovik.layout(n).parts.find(p=>p.id===id);

@@ -1,5 +1,10 @@
 // This is the single source for the public DEVLOG and ROADMAP sections.
-export const devlog=[{date:'2026-09-15',title:'003 / Near neighbours',paragraphs:[
+export const devlog=[{date:'2026-09-15',title:'004 / Two quadrant studies',paragraphs:[
+  'Built: Study now opens on Cistercian, with Read, Choice, and Build available across its complete 0–9999 single-glyph range. The system was already present in the shared registry; making it the visible default exposes that capability instead of hiding it behind the Kaktovik selection.',
+  'Naming finding: the experimental Ko label concealed its mechanism. It is now presented as Quarter-Circle B16: four quadrant arcs weighted 1, 2, 4, and 8. The internal `ko` identity remains stable so existing links and device-local statistics are not discarded.',
+  'Built: Quarter-Circle B16 now has an exact Build lattice for values 0–15. A centre dot represents zero; mixing it with active arcs is rejected as non-canonical. Read and structurally matched Choice remain available.',
+  'These two systems now make a useful Study pair: Cistercian encodes four decimal places by mirrored quadrant strokes, while Quarter-Circle B16 encodes one hexadecimal digit by additive quadrant bits.'
+]},{date:'2026-09-15',title:'003 / Near neighbours',paragraphs:[
   'Built: Choice mode presents four decimal answers for the displayed glyph. Its distractors are selected by structural distance—the number of glyph parts that would need to be added or removed—then by numerical proximity. This makes the choices plausible within each notation instead of merely random.',
   'Measurement finding: choosing a wrong answer records the exact target → choice pair in the same device-local statistics model used by Read and Compose. This gives the future confusion table meaningful observations without sending study data anywhere.',
   'Design caveat: equal part count does not guarantee equal perceptual similarity. The current heuristic is intentionally legible and testable; observed confusion pairs should eventually replace its assumptions.',
@@ -18,7 +23,7 @@ export const devlog=[{date:'2026-09-15',title:'003 / Near neighbours',paragraphs
   'Not yet measured: reading speed, accuracy, perceived similarity, phone frame rate, and the effect of skin on legibility. Animation currently fades in added parts and removes departing parts immediately; afterglow, moving parts, and carry cascades remain future work.'
 ]}];
 export const roadmap=[
-  {status:'BUILT · PLAY & STUDY',title:'Make the differences tangible',items:['Nine systems, including Kaktovik, Maya, and 正 tally','Read, structure-matched Choice, and Compose study modes','Device-local timing, accuracy, and confusion-pair statistics','Ghost lattices, exit afterglow, draw-on, and carry staggering','DEVLOG and ROADMAP as living project content']},
+  {status:'BUILT · PLAY & STUDY',title:'Make the differences tangible',items:['Nine systems, including Kaktovik, Maya, and 正 tally','Cistercian and Quarter-Circle B16 as featured quadrant studies','Read, structure-matched Choice, and Build study modes','Device-local timing, accuracy, and confusion-pair statistics','Ghost lattices, exit afterglow, draw-on, and carry staggering']},
   {status:'NEXT · TEST & DEEPEN',title:'Turn sessions into evidence',items:['Human visual review of Maya geometry and continued Kaktovik review','Phone layout, reduced-motion, and sustained performance checks','Confusion-pair table and value error heatmap','Export and import local study statistics','Use observed confusions to improve Choice distractors']},
   {status:'LATER · EXPAND THE LAB',title:'Measure, then invent',items:['Timer and ammo experiments; test positional carry against erosion','Extended historical catalog and source notes','Geometry-aware similarity and measured reading experiments','Embeddable display component and offline support','Forge: design, save, compare, and export original systems']}
 ];

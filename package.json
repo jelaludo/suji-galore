@@ -1,0 +1,1 @@
+{"name":"suji-galore","private":true,"type":"module","scripts":{"test":"node tests/systems.test.js","start":"python3 -m http.server 8000"}}

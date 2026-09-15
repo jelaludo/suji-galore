@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#08080a"><meta name="description" content="An experimental playground for numbers: compare numeral systems, watch them count, and explore how each glyph works.">
+  <title>sūji-galore · a number playground</title>
+  <link rel="stylesheet" href="css/base.css">
+</head>
+<body>
+  <header class="masthead"><a class="brand" href="#playground">sūji-galore <span lang="ja">数字</span></a><nav aria-label="Main"><a href="#playground">Playground</a><a href="#devlog">DEVLOG</a><a href="#roadmap">ROADMAP</a></nav><span class="edition">LAB / 001</span></header>
+  <main>
+    <section id="playground" aria-labelledby="title">
+      <div class="intro"><div><p class="eyebrow">A NUMBER PLAYGROUND</p><h1>One number. Many ways to see it.</h1></div><p class="intro-note">Count, compare, get curious.<br><span lang="ja">数のかたちで遊ぶ。</span></p></div>
+      <div class="console">
+        <div class="number-control"><label for="number">YOUR NUMBER</label><input id="number" value="42" type="text" inputmode="text" autocomplete="off" spellcheck="false" aria-describedby="input-help"><div class="nudges"><button id="minus" aria-label="Subtract one">−</button><button id="plus" aria-label="Add one">+</button><button id="random">Random</button></div></div>
+        <div class="transport"><span class="control-label">MOTION</span><div class="button-row"><button id="down" aria-label="Count down" aria-pressed="false">↓ Down</button><button id="pause" aria-label="Pause counting" aria-pressed="true">Ⅱ Pause</button><button id="up" aria-label="Count up" aria-pressed="false">↑ Up</button></div><label class="rate-label" for="rate">Speed <output id="rate-value">2 / sec</output></label><input id="rate" type="range" min="1" max="10" value="2"></div>
+        <div class="skin-control"><label for="skin">SURFACE</label><select id="skin"><option value="nixie">Nixie glow</option><option value="ink">Ink</option><option value="blueprint">Blueprint</option></select><label class="check"><input id="explain" type="checkbox"> Explain the parts</label></div>
+      </div>
+      <div class="under-console"><p id="input-help">Decimal, 0x hex, or 0b binary · ↑ / ↓ to step</p><p id="status" role="status">Paused at 42</p></div>
+      <div class="gallery-heading"><h2>Same value, different logic</h2><span>6 SYSTEMS · TAP TO EXPLORE</span></div>
+      <div id="gallery" class="gallery"></div>
+      <div class="experiments"><span>TRY A TRANSITION</span><button data-example="4">4 → 5 <small>grouping</small></button><button data-example="15">15 → 16 <small>bit carry</small></button><button data-example="99">99 → 100 <small>place value</small></button><button data-example="1999">1999 → 2000 <small>four quadrants</small></button></div>
+    </section>
+    <section id="devlog" class="notebook" aria-labelledby="devlog-title"><div class="section-heading"><p class="eyebrow">FIELD NOTES</p><h2 id="devlog-title">DEVLOG</h2><p>What we build. What we notice. What we still need to test.</p></div><div id="devlog-content"></div></section>
+    <section id="roadmap" class="notebook" aria-labelledby="roadmap-title"><div class="section-heading"><p class="eyebrow">NEXT EXPERIMENTS</p><h2 id="roadmap-title">ROADMAP</h2><p>A living list, shaped by what we learn in the playground.</p></div><div id="roadmap-content" class="roadmap-grid"></div></section>
+    <footer><span>sūji-galore · an ongoing experiment</span><div><a href="https://github.com/kai-denrei/dexipurei-galore">Display lab ↗</a><a href="https://github.com/kai-denrei/CistercianWeave">CistercianWeave ↗</a></div></footer>
+  </main>
+  <dialog id="detail"><div class="dialog-top"><div><p class="eyebrow" id="detail-category"></p><h2 id="detail-name"></h2></div><button id="close" aria-label="Close expanded view">Close ×</button></div><div id="detail-stage" class="stage"></div><div class="detail-number">DECIMAL <output id="detail-value"></output></div><div class="detail-controls"><button id="detail-minus">− 1</button><button id="detail-plus">+ 1</button><button id="detail-explain" aria-pressed="false">Explain</button></div><p id="detail-description"></p><div id="detail-groups" class="groups"></div><p id="detail-source" class="source"></p></dialog>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

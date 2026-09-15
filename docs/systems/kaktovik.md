@@ -1,8 +1,8 @@
 # Kaktovik numerals · イヌピアック数字
 
-Kaktovik numerals are positional base 20 with a visible sub-base of five. In each digit, three upper strokes count groups of five and four lower strokes count ones. For example, 12 is two five-strokes plus two one-strokes; 20 is written as the base-20 pair `[1][0]`.
+Kaktovik numerals are positional base 20 with a visible sub-base of five. In each digit, up to three strokes count groups of five and up to four strokes count ones. For example, 12 is two five-strokes plus two one-strokes; 20 is written as the base-20 pair `[1][0]`.
 
-The playground draws an original, simplified straight-stroke interpretation. Stable parts `f1`–`f3` occupy the upper band and `o1`–`o4` occupy the lower band, so 19 reads as a 15 component above a 4 component without crossing. This makes addition and subtraction visible during counting and allows exact composition exercises. The zero is a separate hooked loop.
+The playground draws an original, simplified straight-stroke interpretation. The five-group forms a right-facing upper zigzag, while the unit zigzag begins at its lower-left attachment point. Thus 6 joins 5 to 1, 11 joins 10 to 1, and the bottom-left joint of 15 perfectly meets the top of 1 to make 16. Stable part identities `f1`–`f3` and `o1`–`o4` still make addition and subtraction visible during counting and allow exact composition exercises. The zero is a separate hooked loop.
 
 Reference:
 

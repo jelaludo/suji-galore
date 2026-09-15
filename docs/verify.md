@@ -1,6 +1,6 @@
 # Visual verification queue
 
-- Kaktovik: the five/one overlap at 19 and 399 was corrected after visual review. Continue comparing the original straight-stroke interpretation against `kaktovik20digits.png`, especially stroke angles, spacing, and the zero.
+- Kaktovik: visual review corrected the self-crossing 19, the reversed 10, and the gap between five-groups and units. Regression checks now enforce a right-pointing 10 and exact joins at 6, 11, and 16. Continue comparing stroke angles and the zero against `kaktovik20digits.png`.
 - Maya: review the original shell symbol and vertical cell spacing against representative historical conventions. The Unicode chart’s font is a reference, not prescriptive geometry.
 - Check Cistercian convention against the reference chart with a human reader.
 - Review Ko zero-position marker and smallest inner rings at the input maximum.

@@ -27,8 +27,9 @@ export const systems = [
     source:'https://www.unicode.org/charts/PDF/U1D2C0.pdf',
     layout(n){const ds=digits(n,20),parts=[],groups=[];ds.forEach((d,i)=>{const x=(ds.length-1-i)*112+6;const f=Math.floor(d/5),o=d%5;
       if(d===0)parts.push(path(`${i}:zero`,`M${x+50},31C${x+31},40 ${x+31},68 ${x+48},76C${x+66},83 ${x+77},60 ${x+63},48M${x+48},48L${x+72},30`,0));
-      const five=[[82,10,15,24],[15,24,82,40],[82,40,15,56]];for(let j=0;j<f;j++){const g=five[j];parts.push(line(`${i}:f${j+1}`,x+g[0],g[1],x+g[2],g[3],0));}
-      const one=[[20,60,40,108],[40,108,58,60],[58,60,74,108],[74,108,90,60]];for(let j=0;j<o;j++){const g=one[j];parts.push(line(`${i}:o${j+1}`,x+g[0],g[1],x+g[2],g[3],1));}
+      const five=f===1?[[15,28,82,10]]:[[15,10,82,27],[82,27,15,44],[15,44,82,61]];for(let j=0;j<f;j++){const g=five[j];parts.push(line(`${i}:f${j+1}`,x+g[0],g[1],x+g[2],g[3],0));}
+      const [unitX,unitY]=f===0?[28,10]:f===1?[15,28]:[15,44],unitReturnY=f===0?12:unitY+9;
+      const one=[[unitX,unitY,38,108],[38,108,62,unitReturnY],[62,unitReturnY,78,108],[78,108,94,unitReturnY]];for(let j=0;j<o;j++){const g=one[j];parts.push(line(`${i}:o${j+1}`,x+g[0],g[1],x+g[2],g[3],1));}
       groups.push(`${d} × ${20**i} · ${f} fives + ${o}`);});return layout(parts,ds.length*112,112,groups);},
     decode(ids){let n=0;const positions=new Set(ids.map(id=>Number(id.split(':')[0])));if(!positions.size)return NaN;for(const i of positions){const own=ids.filter(id=>id.startsWith(`${i}:`));const d=own.some(id=>id.endsWith(':zero'))?0:own.filter(id=>/:f\d$/.test(id)).length*5+own.filter(id=>/:o\d$/.test(id)).length;n+=d*20**i;}return n;}
   }),

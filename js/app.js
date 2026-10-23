@@ -1,8 +1,8 @@
-import {systems} from './systems/index.js';
+import {systems} from './systems/index.js?v=20261023-2';
 import {parseNumber,MAX} from './core/numbers.js';
-import {render} from './core/render-svg.js';
+import {render} from './core/render-svg.js?v=20261023-2';
 import {devlog,roadmap} from './notebook.js';
-import {initQuiz} from './quiz.js';
+import {initQuiz} from './quiz.js?v=20261023-2';
 const $=id=>document.getElementById(id);
 const params=new URLSearchParams(location.search);
 let value=parseNumber(params.get('v')??'42')??42,skin='nixie',explain=false,direction=0,timer=null,selected=null;

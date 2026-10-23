@@ -12,6 +12,7 @@ function animateOut(el,skin,delay){const clone=el.cloneNode(true);clone.removeAt
 }
 export function render(stage,system,value,{skin='nixie',explain=false}={}) {
   stage.dataset.skin=skin;
+  stage.dataset.system=system.id;
   stage.classList.toggle('explaining',explain);
   if(!system.canRender(value)) {stage.replaceChildren();const p=document.createElement('p');p.className='reason';p.textContent=value<system.min?'No negative values':`Range: ${system.min}–${system.max.toLocaleString()}`;stage.append(p);return null;}
   const next=system.layout(value);const previous=Number(stage.dataset.value);stage.dataset.value=String(value);let svg=stage.querySelector('svg');

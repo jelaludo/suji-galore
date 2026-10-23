@@ -62,6 +62,57 @@ export const systems = [
     layout(n){if(n===0)return layout([path('zero','M79,80a1,1 0 1,0 2,0a1,1 0 1,0 -2,0',0,true)],160,160,['0']);const ds=digits(n,16),parts=[],groups=[];ds.forEach((d,i)=>{const r=70-i*12;const arc=[`M${80-r},80A${r},${r} 0 0,1 80,${80-r}`,`M80,${80-r}A${r},${r} 0 0,1 ${80+r},80`,`M80,${80+r}A${r},${r} 0 0,1 ${80-r},80`,`M${80+r},80A${r},${r} 0 0,1 80,${80+r}`];for(let b=0;b<4;b++)if(d&(1<<b))parts.push(path(`${i}:bit${b}`,arc[b],b));if(!d)parts.push(line(`${i}:zero`,80,80-r-2,80,80-r+2,i%4));groups.push(`${d} × ${16**i}${i===0?' · outer':''}`);});return layout(parts,160,160,groups);},
     decode(ids){const hasBits=ids.some(id=>/:bit\d$/.test(id));if(ids.includes('zero'))return hasBits?NaN:0;return systems.find(s=>s.id==='kado').decode(ids);}
   }),
+  system({id:'square-b16',name:'Square-Segment B16',ja:'方 · quadrant bits',base:16,origin:'Invented',structure:'Concentric squares',
+    quizMax:15,composeMax:15,composeSeeds:Array.from({length:16},(_,i)=>i),
+    description:'A square variation of Quarter-Circle B16. Each quadrant lights two beveled bars at right angles: upper left = 1, upper right = 2, lower left = 4, lower right = 8. Add the lit quadrants. Each base-16 place forms a smaller nested square, with units outermost. Open corners separate the bars. A centre diamond is zero; a short top marker keeps an empty place visible.',source:null,
+    layout(n){
+      if(n===0)return layout([path('zero','M80,77L83,80L80,83L77,80Z',0,true)],160,160,['0']);
+      const parts=[],groups=[];
+      digits(n,16).forEach((d,i)=>{
+        const r=70-i*12,thickness=4.5-i*.45,cornerGap=r*.19,midGap=2;
+        // Two chamfered bars per quadrant; reflection keeps every side exactly square.
+        const bar=(a,b,y)=>[[a,y],[a+thickness/2,y-thickness/2],[b-thickness/2,y-thickness/2],[b,y],[b-thickness/2,y+thickness/2],[a+thickness/2,y+thickness/2]];
+        const horizontal=bar(midGap,r-cornerGap,r);
+        const vertical=horizontal.map(([x,y])=>[y,x]);
+        for(let b=0;b<4;b++)if(d&(1<<b)){
+          const sx=b%2?1:-1,sy=b<2?-1:1;
+          const polygon=points=>points.map(([x,y],j)=>`${j?'L':'M'}${80+sx*x},${80+sy*y}`).join('')+'Z';
+          parts.push(path(`${i}:bit${b}`,polygon(horizontal)+polygon(vertical),b,true));
+        }
+        if(!d)parts.push(path(`${i}:zero`,`M78.5,${80-r-2}h3v4h-3Z`,i%4,true));
+        groups.push(`${d} × ${16**i}${i===0?' · outer':''}`);
+      });
+      return layout(parts,160,160,groups);
+    },
+    decode(ids){return systems.find(s=>s.id==='ko').decode(ids);}
+  }),
+  system({id:'rhombus-b16',name:'Rhombus-Segment B16',ja:'菱 · quadrant bits',base:16,origin:'Invented',structure:'Concentric rhombi',
+    quizMax:15,composeMax:15,composeSeeds:Array.from({length:16},(_,i)=>i),
+    description:'One beveled diagonal segment per quadrant forms a diamond-shaped square: upper left = 1, upper right = 2, lower left = 4, lower right = 8. Add the lit sides; 15 outlines a complete rhombus with open tips. Base-16 places nest inward, with units on the largest outer rhombus. A centre diamond represents zero and a short top marker indicates an empty place.',source:null,
+    layout(n){
+      if(n===0)return layout([path('zero','M80,77L83,80L80,83L77,80Z',0,true)],160,160,['0']);
+      const parts=[],groups=[];
+      digits(n,16).forEach((d,i)=>{
+        const r=70-i*12,halfWidth=(4.5-i*.45)/2,gap=r*.10;
+        const length=(r-2*gap)*Math.SQRT2;
+        // Local chamfered bar runs between adjacent diamond tips, inset at both ends.
+        const points=[[0,0],[halfWidth,-halfWidth],[length-halfWidth,-halfWidth],[length,0],[length-halfWidth,halfWidth],[halfWidth,halfWidth]];
+        for(let b=0;b<4;b++)if(d&(1<<b)){
+          const sx=b%2?1:-1,sy=b<2?-1:1;
+          const polygon=points.map(([along,across],j)=>{
+            const x=gap+(along+across)/Math.SQRT2;
+            const y=r-gap+(-along+across)/Math.SQRT2;
+            return `${j?'L':'M'}${80+sx*x},${80+sy*y}`;
+          }).join('')+'Z';
+          parts.push(path(`${i}:bit${b}`,polygon,b,true));
+        }
+        if(!d)parts.push(path(`${i}:zero`,`M78.5,${80-r-2}h3v4h-3Z`,i%4,true));
+        groups.push(`${d} × ${16**i}${i===0?' · outer':''}`);
+      });
+      return layout(parts,160,160,groups);
+    },
+    decode(ids){return systems.find(s=>s.id==='ko').decode(ids);}
+  }),
   system({id:'tally-gate',name:'Tally',ja:'五本の束 · groups of five',base:1,max:200,origin:'Historical',structure:'Cumulative',
     quizMax:50,
     description:'Four upright strokes, then a diagonal fifth. Every added mark contributes one. Groups wrap after fifty, making growth visible while giving up compactness. Zero is shown as an empty field.',source:'https://en.wikipedia.org/wiki/Tally_marks',

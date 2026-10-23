@@ -125,3 +125,32 @@ main { max-width: none; margin: 0; padding: 0 16px; }
 @media (prefers-reduced-motion: reduce) {
   .brand-label,.masthead nav a b,.card-label small,.card-label .arrow { transition: none; }
 }
+
+
+/* Compare is its own viewport, with a single compact HUD. */
+.view-tabs{display:flex;align-items:center;gap:5px}
+.view-tabs [role=tab]{display:inline-flex;align-items:center;min-height:32px;padding:6px 13px;font-size:11px;background:transparent;border:1px solid transparent;border-radius:5px;color:var(--dim)}
+.view-tabs [aria-selected=true]{color:var(--text);background:var(--panel);border-color:var(--line)}
+body.compare-mode{overflow:hidden;padding:0}
+body.compare-mode>.masthead,body.compare-mode #playground>.intro,body.compare-mode #playground>.console,body.compare-mode .under-console,body.compare-mode .gallery-heading,body.compare-mode main>section:not(#playground),body.compare-mode footer{display:none}
+#compare{position:fixed;inset:0;z-index:40;background:var(--bg);display:flex;flex-direction:column;padding:8px;gap:8px;min-height:0}
+.compare-toolbar{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px 12px;flex-shrink:0}
+.compare-toolbar button,.compare-toolbar select{font-size:11px;min-height:34px;padding:6px 9px}
+.compare-toolbar .button-row{gap:4px}
+.compare-toolbar label{display:flex;align-items:center;gap:6px;margin:0;font-size:10px;letter-spacing:0}
+.compare-toolbar input{width:104px;background:transparent;border:0;border-bottom:1px solid var(--line);border-radius:0;padding:4px;font-size:23px;color:var(--amber)}
+.compare-toolbar input[aria-invalid=true]{border-color:#ee93a0}
+.compare-grid{flex:1;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:6px}
+.compare-cell{position:relative;min-height:0;min-width:0;border:1px solid var(--line);border-radius:5px;overflow:hidden;background:var(--panel)}
+.compare-cell label{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.compare-cell select{position:absolute;z-index:2;top:9px;left:10px;max-width:calc(100% - 20px);min-height:30px;font-size:11px;padding:4px 8px;background:#111214bb;border-color:transparent;color:var(--dim)}
+.compare-cell select:hover,.compare-cell select:focus-visible{border-color:var(--line);color:var(--text)}
+.compare-cell .stage{height:100%;min-height:0;padding:46px 30px 25px}
+.gallery{grid-template-rows:repeat(4,minmax(0,1fr))}
+@media(max-width:700px){
+  #compare{padding:5px;gap:5px}
+  .compare-toolbar{gap:4px 7px}.compare-toolbar button,.compare-toolbar select{font-size:10px;min-height:32px;padding:5px 7px}
+  .compare-toolbar input{font-size:20px;width:88px}
+  .compare-grid{gap:4px}.compare-cell select{font-size:10px;left:5px;top:5px;max-width:calc(100% - 10px)}
+  .compare-cell .stage{padding:40px 12px 18px}
+}

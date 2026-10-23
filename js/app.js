@@ -10,17 +10,53 @@ try{const saved=JSON.parse(localStorage.getItem('suji-settings'));if(['ink','nix
 if(['ink','nixie','blueprint'].includes(params.get('skin')))skin=params.get('skin');
 $('skin').value=skin;$('number').value=String(value);
 const cards=systems.map(system=>{const card=document.createElement('button');card.className='card';card.innerHTML=`<span class="card-head"><span>${system.origin.toUpperCase()}</span><span class="base">${system.base===1?'UNARY':`BASE ${system.base}`}</span></span><span class="stage"></span><span class="card-label"><span><b>${system.name}</b><small>${system.ja}</small></span><span class="arrow" aria-hidden="true">↗</span></span>`;card.setAttribute('aria-label',`Explore ${system.name}`);card.onclick=()=>openDetail(system);$('gallery').append(card);return{system,card,stage:card.querySelector('.stage'),visible:true};});
+let compareVisible=false;
+let compareDefaults=['ko','square-b16','rhombus-b16','kado'];
+try{const saved=JSON.parse(localStorage.getItem('suji-compare'));if(Array.isArray(saved)&&saved.length===4&&saved.every(id=>systems.some(s=>s.id===id)))compareDefaults=saved;}catch{}
+const comparisons=compareDefaults.map((id,i)=>{
+  const panel=document.createElement('div');panel.className='compare-cell';
+  const label=document.createElement('label');label.htmlFor=`compare-system-${i}`;label.textContent=['Upper left','Upper right','Lower left','Lower right'][i];
+  const select=document.createElement('select');select.id=label.htmlFor;
+  systems.forEach(system=>{const option=document.createElement('option');option.value=system.id;option.textContent=system.name;select.append(option);});select.value=id;
+  const stage=document.createElement('div');stage.className='stage';
+  panel.append(label,select,stage);$('compare-grid').append(panel);
+  const item={system:systems.find(s=>s.id===id),stage,select};
+  select.onchange=()=>{item.system=systems.find(s=>s.id===select.value);stage.replaceChildren();stage.removeAttribute('data-value');render(stage,item.system,value,{skin,explain});try{localStorage.setItem('suji-compare',JSON.stringify(comparisons.map(c=>c.system.id)));}catch{}};
+  return item;
+});
+function setView(compare,syncURL=true){
+  document.body.classList.toggle('compare-mode',compare);
+  if(syncURL){const url=new URL(location.href);if(compare)url.searchParams.set('view','compare');else url.searchParams.delete('view');window.history.replaceState(null,'',url);}
+  compareVisible=compare;$('gallery').hidden=compare;$('compare').hidden=!compare;
+  for(const [id,active] of [['gallery-tab',!compare],['compare-tab',compare]]){$(id).setAttribute('aria-selected',String(active));$(id).tabIndex=active?0:-1;}
+  $('view-hint').textContent=compare?'FOUR VIEWS · ONE NUMBER':'TAP A GLYPH TO EXPLORE';
+  update();
+}
+$('gallery-tab').onclick=()=>setView(false);$('compare-tab').onclick=e=>{e.preventDefault();setView(true);$('compare-exit').focus();};
+$('compare-exit').onclick=()=>{setView(false);$('compare-tab').focus();};
+document.querySelector('.view-tabs').onkeydown=e=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;e.preventDefault();const compare=e.key==='End'?true:e.key==='Home'?false:!compareVisible;setView(compare);$(compare?'compare-tab':'gallery-tab').focus();};
 const observer='IntersectionObserver'in window?new IntersectionObserver(entries=>{for(const e of entries){const item=cards.find(c=>c.card===e.target);item.visible=e.isIntersecting;if(item.visible)render(item.stage,item.system,value,{skin,explain});}}):null;
 cards.forEach(c=>observer?.observe(c.card));
-function update(){for(const c of cards){c.card.classList.toggle('unavailable',!c.system.canRender(value));if(c.visible)render(c.stage,c.system,value,{skin,explain});}if(selected)updateDetail();$('status').textContent=`${direction===0?'Paused at':direction>0?'Counting up from':'Counting down from'} ${value.toLocaleString()}`;}
+function update(){if(document.activeElement!==$('compare-number'))$('compare-number').value=String(value);$('compare-skin').value=skin;if(compareVisible)for(const c of comparisons)render(c.stage,c.system,value,{skin,explain});for(const [id,dir] of [['compare-down',-1],['compare-pause',0],['compare-up',1]])$(id).setAttribute('aria-pressed',String(direction===dir));for(const c of cards){c.card.classList.toggle('unavailable',!c.system.canRender(value));if(c.visible)render(c.stage,c.system,value,{skin,explain});}if(selected)updateDetail();$('status').textContent=`${direction===0?'Paused at':direction>0?'Counting up from':'Counting down from'} ${value.toLocaleString()}`;}
 function setValue(next){if(!Number.isSafeInteger(next)||Math.abs(next)>MAX)return false;value=next;$('number').value=String(value);$('number').removeAttribute('aria-invalid');$('input-help').textContent='Decimal, 0x hex, or 0b binary · ↑ / ↓ to step';update();return true;}
 function pause(){direction=0;clearInterval(timer);timer=null;for(const id of ['down','up','pause'])$(id).setAttribute('aria-pressed',String(id==='pause'));update();}
-function run(dir){pause();direction=dir;for(const id of ['down','up','pause'])$(id).setAttribute('aria-pressed',String(id===(dir>0?'up':'down')));timer=setInterval(()=>{if(document.hidden)return;const next=value+direction;if(direction<0&&next<0||Math.abs(next)>MAX){pause();return;}setValue(next);if(direction<0&&value===0)pause();},1000/Number($('rate').value));update();}
+function run(dir){pause();if(dir<0&&value<=0||dir>0&&value>=MAX)return;direction=dir;for(const id of ['down','up','pause'])$(id).setAttribute('aria-pressed',String(id===(dir>0?'up':'down')));timer=setInterval(()=>{if(document.hidden)return;const next=value+direction;if(direction<0&&next<0||Math.abs(next)>MAX){pause();return;}setValue(next);if(direction<0&&value===0||direction>0&&value===MAX)pause();},1000/Number($('rate').value));update();}
 function step(by){pause();setValue(value+by);}
 $('number').addEventListener('input',()=>{pause();const n=parseNumber($('number').value);if(n===null){$('number').setAttribute('aria-invalid','true');$('input-help').textContent='Enter a whole number from −999999 to 999999. Displays keep the last valid value.';}else{value=n;$('number').removeAttribute('aria-invalid');$('input-help').textContent='Decimal, 0x hex, or 0b binary · ↑ / ↓ to step';update();}});
 $('minus').onclick=()=>step(-1);$('plus').onclick=()=>step(1);$('random').onclick=()=>{pause();setValue(Math.floor(Math.random()*201));};
 $('up').onclick=()=>run(1);$('down').onclick=()=>run(-1);$('pause').onclick=pause;
-$('rate').oninput=()=>{$('rate-value').textContent=`${$('rate').value} / sec`;if(direction)run(direction);};
+$('rate').oninput=()=>{if(!$('compare-rate').querySelector(`option[value="${$('rate').value}"]`)){const option=document.createElement('option');option.value=$('rate').value;option.textContent=`${$('rate').value} / sec`;$('compare-rate').append(option);}$('compare-rate').value=$('rate').value;$('rate-value').textContent=`${$('rate').value} / sec`;if(direction)run(direction);};
+$('compare-number').addEventListener('input',()=>{
+  pause();const next=parseNumber($('compare-number').value);
+  if(next===null){$('compare-number').setAttribute('aria-invalid','true');return;}
+  $('compare-number').removeAttribute('aria-invalid');setValue(next);
+});
+$('compare-skin').onchange=()=>{$('skin').value=$('compare-skin').value;$('skin').onchange();};
+$('compare-zero').onclick=()=>{pause();setValue(0);};
+$('compare-start').onclick=()=>{pause();setValue(0);run(1);};
+$('compare-up').onclick=()=>run(1);$('compare-down').onclick=()=>run(-1);$('compare-pause').onclick=pause;
+$('compare-minus').onclick=()=>step(-1);$('compare-plus').onclick=()=>step(1);
+$('compare-rate').onchange=()=>{$('rate').value=$('compare-rate').value;$('rate').oninput();};
 let quiz;
 $('skin').onchange=()=>{skin=$('skin').value;try{localStorage.setItem('suji-settings',JSON.stringify({skin}));}catch{}update();quiz?.refresh();};
 function toggleExplain(){explain=!explain;$('explain').checked=explain;$('detail-explain').setAttribute('aria-pressed',String(explain));update();}
@@ -34,6 +70,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('playground-tools
 for(const entry of devlog){const article=document.createElement('article');article.className='entry';const time=document.createElement('time');time.dateTime=entry.date;time.textContent=entry.date;const body=document.createElement('div');const title=document.createElement('h3');title.textContent=entry.title;body.append(title);entry.paragraphs.forEach((text,i)=>{const p=document.createElement('p');p.textContent=text;if(i===1)p.className='finding';body.append(p);});article.append(time,body);$('devlog-content').append(article);}
 for(const item of roadmap){const article=document.createElement('article');article.className='roadmap-item';const tag=document.createElement('span');tag.className='tag';tag.textContent=item.status;const h=document.createElement('h3');h.textContent=item.title;const ul=document.createElement('ul');item.items.forEach(text=>{const li=document.createElement('li');li.textContent=text;ul.append(li);});article.append(tag,h,ul);$('roadmap-content').append(article);}
 quiz=initQuiz(systems,()=>skin);
-update();
+setView(params.get('view')==='compare',false);
 const context=document.modelContext;
 if(context?.registerTool){const lifecycle=new AbortController();try{Promise.resolve(context.registerTool({name:'set_playground_number',description:'Set the shared number displayed by every numeral system and pause counting.',inputSchema:{type:'object',properties:{value:{type:'integer',minimum:-MAX,maximum:MAX}},required:['value'],additionalProperties:false},annotations:{readOnlyHint:false,untrustedContentHint:false},execute(input){if(!input||!Number.isInteger(input.value)||Math.abs(input.value)>MAX)throw new Error('Expected an integer from -999999 to 999999');pause();setValue(input.value);return{value,systems:systems.filter(s=>s.canRender(value)).map(s=>s.id)};}},{signal:lifecycle.signal})).catch(()=>{});}catch{}window.addEventListener('pagehide',()=>lifecycle.abort(),{once:true});}

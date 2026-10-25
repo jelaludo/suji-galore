@@ -7,3 +7,17 @@
 .stage:is([data-system="square-b16"],[data-system="rhombus-b16"]) svg{filter:drop-shadow(0 0 1.5px currentColor)}
 .stage:is([data-system="square-b16"],[data-system="rhombus-b16"])[data-skin="nixie"] svg{filter:drop-shadow(0 0 2px #ff9c48) drop-shadow(0 0 5px #d45d1638)}
 .stage:is([data-system="square-b16"],[data-system="rhombus-b16"])::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:repeating-linear-gradient(0deg,transparent 0px,transparent 2px,#000 2px,#000 3px);opacity:.09}
+
+/* Generous transparent targets keep fine strokes easy to inspect. */
+.ghost{pointer-events:none}
+.segment-hit{fill:none;stroke:transparent;stroke-width:12;stroke-linecap:round;stroke-linejoin:round;pointer-events:stroke;cursor:help}
+.segment-hit.filled{fill:transparent;pointer-events:all;stroke-width:8}
+.segment-hit:focus{outline:none}
+.inspected-part{color:#fff5dd!important;filter:drop-shadow(0 0 3px currentColor)}
+.segment-tooltip{position:fixed;inset:auto;margin:0;z-index:100;width:min(310px,calc(100vw - 24px));padding:16px 18px;border:1px solid #756044;border-radius:8px;background:#141416;color:var(--text);box-shadow:0 12px 40px #0009;pointer-events:none;text-align:left;font:12px/1.6 'JetBrains Mono',monospace;letter-spacing:0}
+.segment-tooltip::backdrop{background:transparent;pointer-events:none}
+.segment-tooltip-eyebrow{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--amber);margin-bottom:8px}
+.segment-tooltip strong{display:block;font-size:14px;font-weight:500;line-height:1.4}
+.segment-tooltip p{color:var(--dim);margin:9px 0 12px;font-size:11px;line-height:1.75}
+.segment-tooltip-equation{font-size:19px;line-height:1.5;color:var(--amber);overflow-wrap:anywhere}
+.segment-tooltip-context{margin-top:10px;padding-top:9px;border-top:1px solid var(--line);font-size:11px;color:var(--dim)}

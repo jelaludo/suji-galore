@@ -1,8 +1,8 @@
-import {systems} from './systems/index.js?v=20261023-2';
+import {systems} from './systems/index.js?v=20261023-3';
 import {parseNumber,MAX} from './core/numbers.js';
-import {render} from './core/render-svg.js?v=20261023-2';
+import {render} from './core/render-svg.js?v=20261023-3';
 import {devlog,roadmap} from './notebook.js';
-import {initQuiz} from './quiz.js?v=20261023-2';
+import {initQuiz} from './quiz.js?v=20261023-3';
 const $=id=>document.getElementById(id);
 const params=new URLSearchParams(location.search);
 let value=parseNumber(params.get('v')??'42')??42,skin='nixie',explain=false,direction=0,timer=null,selected=null;
@@ -21,7 +21,7 @@ const comparisons=compareDefaults.map((id,i)=>{
   const stage=document.createElement('div');stage.className='stage';
   panel.append(label,select,stage);$('compare-grid').append(panel);
   const item={system:systems.find(s=>s.id===id),stage,select};
-  select.onchange=()=>{item.system=systems.find(s=>s.id===select.value);stage.replaceChildren();stage.removeAttribute('data-value');render(stage,item.system,value,{skin,explain});try{localStorage.setItem('suji-compare',JSON.stringify(comparisons.map(c=>c.system.id)));}catch{}};
+  select.onchange=()=>{item.system=systems.find(s=>s.id===select.value);stage.replaceChildren();stage.removeAttribute('data-value');render(stage,item.system,value,{skin,explain,inspect:true});try{localStorage.setItem('suji-compare',JSON.stringify(comparisons.map(c=>c.system.id)));}catch{}};
   return item;
 });
 function setView(compare,syncURL=true){
@@ -29,15 +29,15 @@ function setView(compare,syncURL=true){
   if(syncURL){const url=new URL(location.href);if(compare)url.searchParams.set('view','compare');else url.searchParams.delete('view');window.history.replaceState(null,'',url);}
   compareVisible=compare;$('gallery').hidden=compare;$('compare').hidden=!compare;
   for(const [id,active] of [['gallery-tab',!compare],['compare-tab',compare]]){$(id).setAttribute('aria-selected',String(active));$(id).tabIndex=active?0:-1;}
-  $('view-hint').textContent=compare?'FOUR VIEWS · ONE NUMBER':'TAP A GLYPH TO EXPLORE';
+  $('view-hint').textContent=compare?'HOVER A SEGMENT TO LEARN':'HOVER A SEGMENT · TAP TO EXPLORE';
   update();
 }
 $('gallery-tab').onclick=()=>setView(false);$('compare-tab').onclick=e=>{e.preventDefault();setView(true);$('compare-exit').focus();};
 $('compare-exit').onclick=()=>{setView(false);$('compare-tab').focus();};
 document.querySelector('.view-tabs').onkeydown=e=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;e.preventDefault();const compare=e.key==='End'?true:e.key==='Home'?false:!compareVisible;setView(compare);$(compare?'compare-tab':'gallery-tab').focus();};
-const observer='IntersectionObserver'in window?new IntersectionObserver(entries=>{for(const e of entries){const item=cards.find(c=>c.card===e.target);item.visible=e.isIntersecting;if(item.visible)render(item.stage,item.system,value,{skin,explain});}}):null;
+const observer='IntersectionObserver'in window?new IntersectionObserver(entries=>{for(const e of entries){const item=cards.find(c=>c.card===e.target);item.visible=e.isIntersecting;if(item.visible)render(item.stage,item.system,value,{skin,explain,inspect:true});}}):null;
 cards.forEach(c=>observer?.observe(c.card));
-function update(){if(document.activeElement!==$('compare-number'))$('compare-number').value=String(value);$('compare-skin').value=skin;if(compareVisible)for(const c of comparisons)render(c.stage,c.system,value,{skin,explain});for(const [id,dir] of [['compare-down',-1],['compare-pause',0],['compare-up',1]])$(id).setAttribute('aria-pressed',String(direction===dir));for(const c of cards){c.card.classList.toggle('unavailable',!c.system.canRender(value));if(c.visible)render(c.stage,c.system,value,{skin,explain});}if(selected)updateDetail();$('status').textContent=`${direction===0?'Paused at':direction>0?'Counting up from':'Counting down from'} ${value.toLocaleString()}`;}
+function update(){if(document.activeElement!==$('compare-number'))$('compare-number').value=String(value);$('compare-skin').value=skin;if(compareVisible)for(const c of comparisons)render(c.stage,c.system,value,{skin,explain,inspect:true});for(const [id,dir] of [['compare-down',-1],['compare-pause',0],['compare-up',1]])$(id).setAttribute('aria-pressed',String(direction===dir));for(const c of cards){c.card.classList.toggle('unavailable',!c.system.canRender(value));if(c.visible)render(c.stage,c.system,value,{skin,explain,inspect:true});}if(selected)updateDetail();$('status').textContent=`${direction===0?'Paused at':direction>0?'Counting up from':'Counting down from'} ${value.toLocaleString()}`;}
 function setValue(next){if(!Number.isSafeInteger(next)||Math.abs(next)>MAX)return false;value=next;$('number').value=String(value);$('number').removeAttribute('aria-invalid');$('input-help').textContent='Decimal, 0x hex, or 0b binary · ↑ / ↓ to step';update();return true;}
 function pause(){direction=0;clearInterval(timer);timer=null;for(const id of ['down','up','pause'])$(id).setAttribute('aria-pressed',String(id==='pause'));update();}
 function run(dir){pause();if(dir<0&&value<=0||dir>0&&value>=MAX)return;direction=dir;for(const id of ['down','up','pause'])$(id).setAttribute('aria-pressed',String(id===(dir>0?'up':'down')));timer=setInterval(()=>{if(document.hidden)return;const next=value+direction;if(direction<0&&next<0||Math.abs(next)>MAX){pause();return;}setValue(next);if(direction<0&&value===0||direction>0&&value===MAX)pause();},1000/Number($('rate').value));update();}
@@ -62,7 +62,7 @@ $('skin').onchange=()=>{skin=$('skin').value;try{localStorage.setItem('suji-sett
 function toggleExplain(){explain=!explain;$('explain').checked=explain;$('detail-explain').setAttribute('aria-pressed',String(explain));update();}
 $('explain').onchange=toggleExplain;$('detail-explain').onclick=toggleExplain;
 document.querySelectorAll('[data-example]').forEach(b=>b.onclick=()=>{pause();setValue(Number(b.dataset.example));$('playground-tools').open=false;});
-function updateDetail(){const next=render($('detail-stage'),selected,value,{skin,explain});$('detail-value').textContent=value.toLocaleString();$('detail-groups').replaceChildren();$('detail-groups').hidden=!explain;if(next)next.groups.forEach(label=>{const s=document.createElement('span');s.textContent=label;$('detail-groups').append(s);});}
+function updateDetail(){const next=render($('detail-stage'),selected,value,{skin,explain,inspect:true});$('detail-value').textContent=value.toLocaleString();$('detail-groups').replaceChildren();$('detail-groups').hidden=!explain;if(next)next.groups.forEach(label=>{const s=document.createElement('span');s.textContent=label;$('detail-groups').append(s);});}
 function openDetail(system){pause();selected=system;$('detail-name').textContent=`${system.name} · ${system.ja}`;$('detail-category').textContent=`${system.origin} / ${system.structure}`;$('detail-description').textContent=system.description;$('detail-source').replaceChildren();if(system.source){const a=document.createElement('a');a.href=system.source;a.textContent=system.source;a.target='_blank';a.rel='noopener noreferrer';$('detail-source').append(a);}else $('detail-source').textContent='Original experimental notation from the sūji-galore brief.';updateDetail();$('detail').showModal();}
 $('close').onclick=()=>$('detail').close();$('detail').addEventListener('close',()=>{selected=null;});$('detail-minus').onclick=()=>step(-1);$('detail-plus').onclick=()=>step(1);
 document.addEventListener('pointerdown',e=>{const tools=$('playground-tools');if(tools.open&&!tools.contains(e.target))tools.open=false;});

@@ -3,6 +3,7 @@ import {parseNumber} from '../js/core/numbers.js';
 import {diffParts,carryDelay} from '../js/core/transition.js';
 import {templateFor} from '../js/core/template.js';
 import {choiceOptions,structuralDistance} from '../js/core/quiz-options.js';
+import {explainSegment} from '../js/core/segment-explanation.js';
 export function runTests(){
   let checks=0;const assert=(condition,message)=>{checks++;if(!condition)throw new Error(message);};
   for(const [text,want] of [['0',0],['0xFF',255],['-0b11',-3],['+42',42],['',null],['1e3',null],['2.2',null],['9999999999999999',null]])assert(parseNumber(text)===want,`Parse ${text}`);
@@ -27,6 +28,26 @@ export function runTests(){
   const maya=systems.find(s=>s.id==='maya');assert(maya.layout(19).parts.filter(p=>p.id.includes(':bar')).length===3&&maya.layout(19).parts.filter(p=>p.id.includes(':dot')).length===4,'Maya 19 has 3 bars and 4 dots');
   const sei=systems.find(s=>s.id==='tally-sei');assert(sei.layout(7).parts.length===7&&sei.decode(sei.layout(7).parts.map(p=>p.id))===7,'Sei tally preserves stroke count');
   const transition=diffParts(c.layout(1999),c.layout(2000));assert(transition.added.join(',')==='k:b'&&transition.removed.length===10&&transition.kept.join(',')==='stem','Cistercian 1999 to 2000 diff');assert(carryDelay('h:a',1999,2000)===80&&carryDelay('u:a',1999,2000)===0,'Carry delay is least significant first');
+  for(const s of systems){
+    for(const n of [0,Math.min(42,s.max),s.max,...(s.min<0?[-42]:[])]){
+      for(const part of s.layout(n).parts){
+        const info=explainSegment(s,n,part.id);
+        assert(info.title&&info.detail&&info.context&&!JSON.stringify(info).match(/NaN|undefined/),`${s.id} explanation for ${n}, ${part.id}`);
+        assert(info.amount===null||Number.isFinite(info.amount),`${s.id} finite contribution for ${part.id}`);
+      }
+    }
+  }
+  for(const id of ['kado','ko','square-b16','rhombus-b16']){
+    const s=systems.find(s=>s.id===id),info=explainSegment(s,42,'1:bit1');
+    assert(info.amount===32&&info.equation==='2 × 16 = 32'&&info.context==='10 + 32 = 42',`${id} segment includes positional weight`);
+  }
+  assert(explainSegment(maya,42,'1:dot1').amount===20,'Maya high-place dot contributes twenty');
+  assert(explainSegment(kaktovik,142,'1:f1').amount===100,'Kaktovik high-place five stroke contributes one hundred');
+  assert(explainSegment(c,42,'t:d').amount===40&&explainSegment(c,42,'t:d').detail.includes('no fixed additive value'),'Cistercian stroke describes whole quadrant');
+  const seg7=systems.find(s=>s.id==='seg7');
+  assert(explainSegment(seg7,-42,'1:b').amount===-40&&explainSegment(seg7,-42,'1:b').context==='-2 − 40 = -42','Seven-segment signed digit contribution');
+  assert(explainSegment(c,42,'stem').amount===null&&explainSegment(k,42,'1:frame').amount===null,'Structural parts have no additive contribution');
+  assert(explainSegment(quarter,0,'zero').equation==='0 × 1 = 0','Standalone zero has a valid explanation');
   return `${checks.toLocaleString()} checks passed across ${systems.length} systems.`;
 }
 if(typeof document==='undefined')console.log(runTests());

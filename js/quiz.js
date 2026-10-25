@@ -1,4 +1,4 @@
-import {render} from './core/render-svg.js?v=20261023-2';
+import {render} from './core/render-svg.js?v=20261023-3';
 import {templateFor,isStructuralPart} from './core/template.js';
 import {choiceOptions} from './core/quiz-options.js';
 const NS='http://www.w3.org/2000/svg';

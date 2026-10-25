@@ -1,5 +1,6 @@
 import {templateFor} from './template.js';
 import {carryDelay} from './transition.js';
+import {inspectSegments} from './segment-inspector.js';
 const NS='http://www.w3.org/2000/svg';
 const reduced=()=>globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 function animateIn(el,skin,delay){if(reduced()||!el.animate)return;let frames=[{opacity:0},{opacity:1}];
@@ -10,11 +11,11 @@ function animateOut(el,skin,delay){const clone=el.cloneNode(true);clone.removeAt
   let frames=skin==='nixie'?[{opacity:1},{opacity:.55,offset:.45},{opacity:0,filter:'blur(4px)'}]:[{opacity:1},{opacity:0,strokeDashoffset:40}];
   const remove=()=>clone.remove();clone.animate(frames,{duration:skin==='nixie'?340:220,delay,easing:'ease-in',fill:'forwards'}).finished.then(remove,remove);
 }
-export function render(stage,system,value,{skin='nixie',explain=false}={}) {
+export function render(stage,system,value,{skin='nixie',explain=false,inspect=false}={}) {
   stage.dataset.skin=skin;
   stage.dataset.system=system.id;
   stage.classList.toggle('explaining',explain);
-  if(!system.canRender(value)) {stage.replaceChildren();const p=document.createElement('p');p.className='reason';p.textContent=value<system.min?'No negative values':`Range: ${system.min}–${system.max.toLocaleString()}`;stage.append(p);return null;}
+  if(!system.canRender(value)) {inspectSegments(stage,system,value,[],false);stage.replaceChildren();const p=document.createElement('p');p.className='reason';p.textContent=value<system.min?'No negative values':`Range: ${system.min}–${system.max.toLocaleString()}`;stage.append(p);return null;}
   const next=system.layout(value);const previous=Number(stage.dataset.value);stage.dataset.value=String(value);let svg=stage.querySelector('svg');
   if(!svg){stage.replaceChildren();svg=document.createElementNS(NS,'svg');svg.setAttribute('role','img');stage.append(svg);}
   svg.setAttribute('aria-label',`${value} in ${system.name}`);
@@ -28,5 +29,6 @@ export function render(stage,system,value,{skin='nixie',explain=false}={}) {
     const delay=carryDelay(part.id,previous,value);if(added)animateIn(el,skin,delay);else if(changed&&!reduced()&&el.animate)el.animate([{opacity:.55},{opacity:1}],{duration:180,delay});
   }
   for(const el of old.values())animateOut(el,skin,carryDelay(el.dataset.part,previous,value));
+  inspectSegments(stage,system,value,next.parts,inspect);
   return next;
 }
